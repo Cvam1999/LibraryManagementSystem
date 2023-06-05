@@ -17,6 +17,7 @@ public class CustomerService implements ICustomerService{
 	
 	@Autowired
 	private CustomerRepository repo;
+
 	
 	@Override
 	public Customer addCustomer(Customer cust) {
@@ -36,6 +37,16 @@ public class CustomerService implements ICustomerService{
 
 	@Override
 	public Customer updateCustomer(Customer cust, int cusId) {
+		String c=cust.getCusName();
+		String p=cust.getPassword();
+		String e=cust.getCusEmail();
+		String n=cust.getContactNo();
+	
+		validateUsername(c);
+		validateEmail(e);
+		validatePassword(p);
+		validateContacNo(n);
+		
 		Customer value=repo.findById(cusId).orElseThrow(()-> new UserNotFoundException("this cusId not found in database"));
 		value.setCusName(cust.getCusName());
 		value.setCusEmail(cust.getCusEmail());
@@ -153,7 +164,7 @@ public class CustomerService implements ICustomerService{
 //			throw new UserNotFoundException("contact number length should be 10");
 //		}
 		else if(!number.matches("^(\\+91[\\-\\s]?)?[0]?(91)?[789]\\d{9}$")){
-			throw new UserNotFoundException("enter correct number");
+			throw new UserNotFoundException("enter correct  mobile number");
 		}
 		else {
 			flag = true;
@@ -161,9 +172,9 @@ public class CustomerService implements ICustomerService{
 		return flag;
     }
 	
-	static String usernameformat ="Format For UserName is Wrong\r\n"
-			+ "\r\n"
-			+ "Please Enter Again :\r\n"
+	static String usernameformat ="Format For UserName is Wrong\r\n "
+			+ "\r\n "
+			+ " Please Enter Again :\r\n"
 			+ "____________________________________________________________\r\n"
 			+ "\r\n"
 			+ "Valid Format for UserName:\r\n"
@@ -183,5 +194,6 @@ public class CustomerService implements ICustomerService{
 			+ "Password must contain at least one special character like ! $ @ % ^ # & + = ( ).\r\n"
 			+ "Password must contain a length of at least 8 characters and a maximum of 20 characters."
 			+ ""  ;
+	
 
 }

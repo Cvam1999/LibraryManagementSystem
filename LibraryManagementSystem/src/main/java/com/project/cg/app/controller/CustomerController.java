@@ -18,7 +18,7 @@ import com.project.cg.app.entity.Customer;
 import com.project.cg.app.service.implementation.CustomerService;
 
 @RestController
-@RequestMapping("/CustomerCtrl")
+@RequestMapping("/Customer")
 public class CustomerController {
 	
 	@Autowired

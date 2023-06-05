@@ -33,7 +33,7 @@ public class IssuedBookService implements IIssuedBookService {
 	@Override
 	public IssuedBook addIssuedBook(IssuedBook book) {
 		if (book.getBook().getBookId()==0 && book.getUser().getCusId()==0) {
-			throw new BookNotFoundException("Book details cannot be blank");
+			throw new BookNotFoundException("Booking details cannot be blank");
 		}
 		int id=book.getBook().getBookId();
 		int cusid=book.getUser().getCusId();

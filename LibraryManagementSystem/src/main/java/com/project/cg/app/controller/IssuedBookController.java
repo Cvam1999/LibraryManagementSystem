@@ -19,7 +19,7 @@ import com.project.cg.app.entity.IssuedBook;
 import com.project.cg.app.service.implementation.IssuedBookService;
 
 @RestController
-@RequestMapping("IssuedBookCtrl")
+@RequestMapping("IssuedBook")
 public class IssuedBookController {
 	
 	@Autowired

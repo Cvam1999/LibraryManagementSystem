@@ -18,7 +18,7 @@ import com.project.cg.app.entity.Book;
 import com.project.cg.app.service.implementation.BookService;
 
 @RestController
-@RequestMapping("/BookCtrl")
+@RequestMapping("/Book")
 public class BookController {
 	
 	@Autowired
