@@ -49,16 +49,6 @@ public class BookService implements IBookService {
 	@Override
 	public List<Book> viewAllBook() {
 		List<Book> allBooks=repository.findAll();
-		System.out.println("Data From DB :");
-		allBooks.forEach(Book->{
-			System.out.println("Tenant Id :"+Book.getBookId());
-			System.out.println("Booking Number :"+Book.getTitle());
-			System.out.println("Booking from Date :"+Book.getAuthor());
-			System.out.println("Booking to Date :"+Book.getPublisher());
-			System.out.println("Booking to Date :"+Book.getGenre());
-			System.out.println("Booking to Date :"+Book.getIssuedBook());
-			System.out.println("Booking to Date :"+Book.getQuantity());
-		});
 		return allBooks;
 	}
 }

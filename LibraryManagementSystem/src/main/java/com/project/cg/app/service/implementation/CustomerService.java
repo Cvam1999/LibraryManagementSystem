@@ -1,5 +1,8 @@
 package com.project.cg.app.service.implementation;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.List;
 
 
@@ -7,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.cg.app.entity.Customer;
-
+import com.project.cg.app.exception.CustomResponseException;
 import com.project.cg.app.exception.UserNotFoundException;
 import com.project.cg.app.repository.CustomerRepository;
 import com.project.cg.app.service.ICustomerService;
@@ -17,35 +20,71 @@ public class CustomerService implements ICustomerService{
 	
 	@Autowired
 	private CustomerRepository repo;
-
+	 public static String doHashing (String password) {
+		  try {
+		   MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+		   //byte[] salt=createSalt();
+		   messageDigest.update(password.getBytes());
+		   
+		   //byte[] resultByteArray = messageDigest.digest(password.getBytes());
+		   byte[] resultByteArray = messageDigest.digest();
+		   StringBuilder sb = new StringBuilder();
+		   
+		   for (byte b : resultByteArray) {
+		    sb.append(String.format("%02x", b));
+		   }
+		   
+		   return sb.toString();
+		   
+		  } catch (NoSuchAlgorithmException e) {
+		   e.printStackTrace();
+		  }
+		  
+		  return "";
+		 }
+	 public static byte[] createSalt() {
+		 byte[] bytes=new byte[20];
+		 SecureRandom random=new SecureRandom();
+		 random.nextBytes(bytes);
+		 return bytes;
+	 }
 	
 	@Override
 	public Customer addCustomer(Customer cust) {
-		String c=cust.getCusName();
-		String p=cust.getPassword();
-		String e=cust.getCusEmail();
-		String n=cust.getContactNo();
-	
-		validateUsername(c);
-		validateEmail(e);
-		validatePassword(p);
-		validateContacNo(n);
-		checkValidUser(e);
+		String name=cust.getCusName();
+		String password=cust.getPassword();
+		String email=cust.getCusEmail();
+		String contactNo=cust.getContactNo();
+		String address=cust.getAddress();
+		
+		String hashPassword=doHashing(password);
+		cust.setPassword(hashPassword);
+		validateUsername(name);
+		validateEmail(email);
+		validatePassword(password);
+		validateAddress(address);
+		validateContacNo(contactNo);
+		checkValidUser(email);
+		
 		Customer result=repo.save(cust);
 		return result;
 	}
 
 	@Override
 	public Customer updateCustomer(Customer cust, int cusId) {
-		String c=cust.getCusName();
-		String p=cust.getPassword();
-		String e=cust.getCusEmail();
-		String n=cust.getContactNo();
-	
-		validateUsername(c);
-		validateEmail(e);
-		validatePassword(p);
-		validateContacNo(n);
+		String name=cust.getCusName();
+		String password=cust.getPassword();
+		String email=cust.getCusEmail();
+		String contactNo=cust.getContactNo();
+		String address=cust.getAddress();
+		
+		String updateHashPassword= doHashing(password);
+		cust.setPassword(updateHashPassword);
+		validateUsername(name);
+		validateEmail(email);
+		validatePassword(password);
+		validateAddress(address);
+		validateContacNo(contactNo);
 		
 		Customer value=repo.findById(cusId).orElseThrow(()-> new UserNotFoundException("this cusId not found in database"));
 		value.setCusName(cust.getCusName());
@@ -75,71 +114,95 @@ public class CustomerService implements ICustomerService{
 		return allCustomers;
 	}
 	
-	public boolean validateUser(Integer cusId, String password) throws UserNotFoundException {
+	public boolean validateUser(Integer cusId, String password){
 		
 		boolean flag = false;
 
 		Customer user = repo.findById(cusId).orElseThrow(()->new UserNotFoundException("user not found with customer id:"+cusId));
-
-		 if (password.equals(user.getPassword()))
+		String matchPassword= doHashing(password);
+		 if (matchPassword.equals(user.getPassword()))
 			flag = true;
 		else
-			throw new UserNotFoundException("Please check password");
+			throw new CustomResponseException("Please check password");
 		return flag;
 	}
 	public boolean checkValidUser(String email) {
 		boolean flag = false;
-		List<Customer> customerList=repo.findAll();
-		for(int i=0;i<customerList.size();i++) {
-			if(!(customerList.get(i).getCusEmail().equals(email))) {
-				flag=true;
+		Customer customer=repo.findByCusEmail(email);
+		
+			if(customer!=null && email.equals(customer.getCusEmail()) ) {
+				throw new CustomResponseException("this email is already in database ");
 			}
 			else {
-				throw new UserNotFoundException("this email is already in database ");
+				flag=true;
+				
 			}
 				
-		}
+		
 		return flag;
+//		boolean flag = false;
+//		List<Customer> customerList=repo.findAll();
+//		for(int i=0;i<customerList.size();i++) {
+//			if(!(customerList.get(i).getCusEmail().equals(email))) {
+//				flag=true;
+//			}
+//			else {
+//				throw new UserNotFoundException("this email is already in database ");
+//			}
+//				
+//		}
+//		return flag;
 	}
-	public static boolean validateUsername(String cusName) throws UserNotFoundException{  		
+	public static boolean validateUsername(String cusName) throws CustomResponseException{  		
 		
 		boolean flag = false;
-		if(cusName == null) {
-			throw new UserNotFoundException("User Name cannot be empty");
+		if(cusName.isEmpty()) {
+			throw new CustomResponseException("User Name cannot be empty");
 			}
 		else if(!cusName.matches("^[a-zA-Z]+$")) {
-			throw new UserNotFoundException(usernameformat);
+			throw new CustomResponseException(usernameformat);
 			}
 		else if(cusName.length()<3 || cusName.length()>30) {
-			throw new UserNotFoundException("User Name length must be in range 3 to 30");
+			throw new CustomResponseException("User Name length must be in range 3 to 30");
 		}
 		else {
 			flag = true;
 		}
 		return flag;
     }
-	public static boolean validateEmail(String email) throws UserNotFoundException{  		
+	public static boolean validateAddress(String address) throws CustomResponseException{  		
 		
 		boolean flag = false;
-		if(email == null) {
-			throw new UserNotFoundException("email cannot be empty");
-			}
-		else if(!email.matches("[a-z0-9]+@[a-z]+\\.[a-z]{2,3}")) {
-			throw new UserNotFoundException("use proper email format");
+		if(address.isEmpty()) {
+			throw new CustomResponseException("Address cannot be empty");
 			}
 		else {
 			flag = true;
 		}
 		return flag;
     }
-	public static boolean validatePassword(String password) throws UserNotFoundException
+	public static boolean validateEmail(String email) throws CustomResponseException{  		
+		
+		boolean flag = false;
+		if(email.isEmpty()) {
+			throw new CustomResponseException("email cannot be empty");
+			}
+		else if(!email.matches("[a-z0-9]+@[a-z]+\\.[a-z]{2,3}")) {
+			throw new CustomResponseException("use proper email format");
+			}
+		else {
+			flag = true;
+		}
+		return flag;
+    }
+	public static boolean validatePassword(String password) throws CustomResponseException
     {  
 		boolean flag = false;
-		if(password == null) {
-			throw new UserNotFoundException("Password cannot be empty");
+		if(password.isEmpty()) {
+			throw new CustomResponseException("Password cannot be empty");
 		}
 		else if(!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,15}$")) {
-			throw new UserNotFoundException(passformat);
+			throw new CustomResponseException(passformat);
 		}
 		else {
 			flag = true;
@@ -154,17 +217,14 @@ public class CustomerService implements ICustomerService{
 //		+91-8880344456
 //		08880344456
 //		918880344456
-	public static boolean validateContacNo(String number) throws UserNotFoundException
+	public static boolean validateContacNo(String number) throws CustomResponseException
     {  
 		boolean flag = false;
 		if(number.isEmpty()) {
-			throw new UserNotFoundException("Contact Number cannot be empty");
+			throw new CustomResponseException("Contact Number cannot be empty");
 		}
-//		else if(!(number.length()==10)) {
-//			throw new UserNotFoundException("contact number length should be 10");
-//		}
 		else if(!number.matches("^(\\+91[\\-\\s]?)?[0]?(91)?[789]\\d{9}$")){
-			throw new UserNotFoundException("enter correct  mobile number");
+			throw new CustomResponseException("enter correct  mobile number");
 		}
 		else {
 			flag = true;
