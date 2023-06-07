@@ -29,14 +29,14 @@ public class BookController {
 	@PostMapping(value="/addBook")
 	public ResponseEntity<String> addBook(@RequestBody Book book){
 		Book value=service.addBook(book);
-		ResponseEntity<String> retValue=new ResponseEntity<>("Book with book no"+ value.getBookId()+" sucessfully created.",HttpStatus.CREATED);
+		ResponseEntity<String> retValue=new ResponseEntity<>("Book with book no "+ value.getBookId()+" sucessfully created.",HttpStatus.CREATED);
 		logger.info("addBook() has executed");
 		return retValue;
 	}
 	@PutMapping(value="/updateBook/{id}")
 	public ResponseEntity<String> updateBook(@RequestBody Book book,@PathVariable Integer id){
 		Book value=service.updateBook(book,id);
-		ResponseEntity<String> retValue=new ResponseEntity<>("Book with book no"+ value.getBookId()+" sucessfully updated.",HttpStatus.ACCEPTED);
+		ResponseEntity<String> retValue=new ResponseEntity<>("Book with book no "+ value.getBookId()+" sucessfully updated.",HttpStatus.ACCEPTED);
 		logger.info("updateBook() has executed");
 		return retValue;
 	}
