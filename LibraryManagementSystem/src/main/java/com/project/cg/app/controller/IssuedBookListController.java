@@ -17,29 +17,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.cg.app.entity.Book;
-import com.project.cg.app.entity.IssuedBook;
-import com.project.cg.app.service.implementation.IssuedBookService;
+import com.project.cg.app.entity.IssuedBookList;
+import com.project.cg.app.service.implementation.IssuedBookListService;
 
 @RestController
-@RequestMapping("IssuedBook")
-public class IssuedBookController {
+@RequestMapping("IssuedBookList")
+public class IssuedBookListController {
 	
-	private static final Logger logger = LogManager.getLogger(IssuedBookController.class);
+	private static final Logger logger = LogManager.getLogger(IssuedBookListController.class);
 	@Autowired
-	private IssuedBookService service;
+	private IssuedBookListService service;
 	
 	@PostMapping(value="/addIssuedBook")
-	public ResponseEntity<String> addBook(@RequestBody IssuedBook book){
+	public ResponseEntity<String> addBook(@RequestBody IssuedBookList book){
 		logger.info("----addBook() method initialized");
-		IssuedBook value=service.addIssuedBook(book);
+		IssuedBookList value=service.addIssuedBook(book);
 		ResponseEntity<String> retValue=new ResponseEntity<>("Book issue with book no:"+ value.getIssueId(),HttpStatus.CREATED);
 		logger.info("addBook() has executed");
 		return retValue;
 	}
 	@PutMapping(value="/updateIssuedBook/{id}")
-	public ResponseEntity<String> updateBook(@RequestBody IssuedBook book,@PathVariable Integer id){
+	public ResponseEntity<String> updateBook(@RequestBody IssuedBookList book,@PathVariable Integer id){
 		logger.info("----updateBook() method initialized");
-		IssuedBook value=service.updateIssuedBook(book,id);
+		IssuedBookList value=service.updateIssuedBook(book,id);
 		ResponseEntity<String> retValue=new ResponseEntity<>("IssuedBook updated with book no:"+ value.getIssueId(),HttpStatus.ACCEPTED);
 		logger.info("updateBook() has executed");
 		return retValue;
@@ -53,19 +53,19 @@ public class IssuedBookController {
 		return retValue;
 	}
 	@GetMapping(value="/viewIssuedBookById/{id}")
-	public ResponseEntity<IssuedBook> viewBook(@PathVariable Integer id){
+	public ResponseEntity<IssuedBookList> viewBook(@PathVariable Integer id){
 		logger.info("----viewBook() method initialized");
-		IssuedBook value=service.viewIssuedBook(id);
-		ResponseEntity<IssuedBook> retValue=new ResponseEntity<>(value,HttpStatus.OK);
+		IssuedBookList value=service.viewIssuedBook(id);
+		ResponseEntity<IssuedBookList> retValue=new ResponseEntity<>(value,HttpStatus.OK);
 		logger.info("viewBook() has executed");
 		return retValue;
 	}
-	@GetMapping(value="/viewAllBook")
-	public ResponseEntity<List<IssuedBook>> viewAllBook(){
-		logger.info("----viewAllBook() method initialized");
-		List<IssuedBook> list=service.viewAllIssuedBook();
-		ResponseEntity<List<IssuedBook>> retValue=new ResponseEntity<>(list,HttpStatus.OK);
-		logger.info("viewAllBook() has executed");
+	@GetMapping(value="/viewAllIssuedBookList")
+	public ResponseEntity<List<IssuedBookList>> viewAllIssuedBookList(){
+		logger.info("----viewAllIssuedBookList() method initialized");
+		List<IssuedBookList> list=service.viewAllIssuedBook();
+		ResponseEntity<List<IssuedBookList>> retValue=new ResponseEntity<>(list,HttpStatus.OK);
+		logger.info("viewAllIssuedBookList() has executed");
 		return retValue;
 	}
 }

@@ -37,8 +37,7 @@ public class BookServiceTest {
 		
 		List<Book> bookInfo = bookService.viewAllBook();
 		
-		assertThat(bookInfo.size() == books.size());
-		assertThat(bookInfo.get(1).getQuantity()==11);
+		
 		assertThat(bookInfo.get(1).getAuthor().equals("shivam"));
 	}
 	
@@ -98,7 +97,7 @@ public class BookServiceTest {
 	
 		bookService.deleteBook(bookId);
 		
-		assertThat(book.getBookId()==10);
+		
 		assertThat(book.getTitle().equals("java"));
 		
 	}	

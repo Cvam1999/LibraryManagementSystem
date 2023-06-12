@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.cg.app.entity.Book;
 import com.project.cg.app.service.implementation.BookService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/Book")
 public class BookController {
@@ -27,14 +29,14 @@ public class BookController {
 	private BookService service;
 	
 	@PostMapping(value="/addBook")
-	public ResponseEntity<String> addBook(@RequestBody Book book){
+	public ResponseEntity<String> addBook(@RequestBody @Valid Book book){
 		Book value=service.addBook(book);
 		ResponseEntity<String> retValue=new ResponseEntity<>("Book with book no "+ value.getBookId()+" sucessfully created.",HttpStatus.CREATED);
 		logger.info("addBook() has executed");
 		return retValue;
 	}
 	@PutMapping(value="/updateBook/{id}")
-	public ResponseEntity<String> updateBook(@RequestBody Book book,@PathVariable Integer id){
+	public ResponseEntity<String> updateBook(@RequestBody @Valid Book book,@PathVariable Integer id){
 		Book value=service.updateBook(book,id);
 		ResponseEntity<String> retValue=new ResponseEntity<>("Book with book no "+ value.getBookId()+" sucessfully updated.",HttpStatus.ACCEPTED);
 		logger.info("updateBook() has executed");
@@ -43,7 +45,7 @@ public class BookController {
 	@DeleteMapping(value="/deleteBook/{id}")
 	public ResponseEntity<String> deleteBook(@PathVariable Integer id){
 		service.deleteBook(id);
-		ResponseEntity<String> retValue=new ResponseEntity<>("Book with book no"+ id+" sucessfully deleted.",HttpStatus.OK);
+		ResponseEntity<String> retValue=new ResponseEntity<>("Book with book no "+ id+" sucessfully deleted.",HttpStatus.OK);
 		logger.info("deleteBook() has executed");
 		return retValue;
 	}

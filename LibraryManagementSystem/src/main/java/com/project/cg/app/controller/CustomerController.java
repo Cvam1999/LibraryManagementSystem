@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.cg.app.entity.Customer;
 import com.project.cg.app.service.implementation.CustomerService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/Customer")
 public class CustomerController {
@@ -28,7 +30,7 @@ public class CustomerController {
 	private CustomerService service;
 	
 	@PostMapping(value="/addCustomer")
-	public ResponseEntity<String> addCustomer(@RequestBody Customer user){
+	public ResponseEntity<String> addCustomer(@RequestBody @Valid Customer user){
 		logger.info("----addCustomer() method initialized");
 		Customer value=service.addCustomer(user);
 		ResponseEntity<String> retValue=new ResponseEntity<>("Customer added with user Id "+ value.getCusId(),HttpStatus.CREATED);
@@ -36,7 +38,7 @@ public class CustomerController {
 		return retValue;
 	}
 	@PutMapping(value="/updateCustomer/{id}")
-	public ResponseEntity<String> updateCustomer(@RequestBody Customer user,@PathVariable Integer id){
+	public ResponseEntity<String> updateCustomer(@RequestBody @Valid Customer user,@PathVariable Integer id){
 		logger.info("----updateCustomer() method initialized");
 		Customer value=service.updateCustomer(user,id);
 		ResponseEntity<String> retValue=new ResponseEntity<>("Customer updated with user Id "+ value.getCusId(),HttpStatus.ACCEPTED);

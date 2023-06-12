@@ -16,7 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class IssuedBook {
+public class IssuedBookList {
 	@Id
 	@GeneratedValue(strategy =GenerationType.AUTO)
 	private int issueId;
@@ -59,18 +59,18 @@ public class IssuedBook {
 	public void setDueDate(LocalDate dueDate) {
 		this.dueDate = dueDate;
 	}
-	public IssuedBook(int issueId, Book book, Customer user, LocalDate issueDate, LocalDate dueDate) {
-		super();
-		this.issueId = issueId;
-		this.book = book;
-		this.user = user;
-		this.issueDate = issueDate;
-		this.dueDate = dueDate;
-	}
-	public IssuedBook() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+//	public IssuedBookList(int issueId, Book book, Customer user, LocalDate issueDate, LocalDate dueDate) {
+//		super();
+//		this.issueId = issueId;
+//		this.book = book;
+//		this.user = user;
+//		this.issueDate = issueDate;
+//		this.dueDate = dueDate;
+//	}
+//	public IssuedBookList() {
+//		super();
+//		// TODO Auto-generated constructor stub
+//	}
 	
 	
 

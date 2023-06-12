@@ -46,12 +46,12 @@ public class CustomerService implements ICustomerService{
 		  
 		  return "";
 		 }
-	 public static byte[] createSalt() {
-		 byte[] bytes=new byte[20];
-		 SecureRandom random=new SecureRandom();
-		 random.nextBytes(bytes);
-		 return bytes;
-	 }
+//	 public static byte[] createSalt() {
+//		 byte[] bytes=new byte[20];
+//		 SecureRandom random=new SecureRandom();
+//		 random.nextBytes(bytes);
+//		 return bytes;
+//	 }
 	
 	    /*
 		 * MethodName  : addCustomer
@@ -63,19 +63,19 @@ public class CustomerService implements ICustomerService{
 	 @Override
 	public Customer addCustomer(Customer cust) {
 		logger.info("Business method addCustomer initiated");
-		String name=cust.getCusName();
+		//String name=cust.getCusName();
 		String password=cust.getPassword();
 		String email=cust.getCusEmail();
-		String contactNo=cust.getContactNo();
-		String address=cust.getAddress();
+//		String contactNo=cust.getContactNo();
+//		String address=cust.getAddress();
 		
 		String hashPassword=doHashing(password);
 		cust.setPassword(hashPassword);
-		validateUsername(name);
-		validateEmail(email);
+		//validateUsername(name);
+		//validateEmail(email);
 		validatePassword(password);
-		validateAddress(address);
-		validateContacNo(contactNo);
+		//validateAddress(address);
+		//validateContacNo(contactNo);
 		checkValidUser(email);
 		
 		Customer result=repo.save(cust);
@@ -94,19 +94,19 @@ public class CustomerService implements ICustomerService{
 	@Override
 	public Customer updateCustomer(Customer cust, int cusId) throws UserNotFoundException {
 		logger.info("Business method updateCustomer initiated");
-		String name=cust.getCusName();
+		//String name=cust.getCusName();
 		String password=cust.getPassword();
-		String email=cust.getCusEmail();
-		String contactNo=cust.getContactNo();
-		String address=cust.getAddress();
+//		String email=cust.getCusEmail();
+//		String contactNo=cust.getContactNo();
+//		String address=cust.getAddress();
 		
 		String updateHashPassword= doHashing(password);
 		cust.setPassword(updateHashPassword);
-		validateUsername(name);
-		validateEmail(email);
+		//validateUsername(name);
+		//validateEmail(email);
 		validatePassword(password);
-		validateAddress(address);
-		validateContacNo(contactNo);
+		//validateAddress(address);
+		//validateContacNo(contactNo);
 		
 		Customer value=repo.findById(cusId).orElseThrow(()-> new UserNotFoundException("this cusId not found in database"));
 		value.setCusName(cust.getCusName());
@@ -245,28 +245,28 @@ public class CustomerService implements ICustomerService{
 		 *@throws CustomResponseException -  It will raise if userName format mismatch.                          	 
 	 *************************************************************************************/
 	
-	public static boolean validateUsername(String cusName) throws CustomResponseException{  		
-		logger.info("validateUsername() is initiated");
-		boolean flag = false;
-		if(cusName.isEmpty()) {
-			logger.error("User Name cannot be empty");
-			throw new CustomResponseException("User Name cannot be empty");
-			}
-		else if(!cusName.matches("^[a-zA-Z]+$")) {
-			logger.error("use proper name format");
-			throw new CustomResponseException(usernameformat);
-			}
-		else if(cusName.length()<3 || cusName.length()>30) {
-			logger.error("User Name length must be in range 3 to 30");
-			throw new CustomResponseException("User Name length must be in range 3 to 30");
-		}
-		else {
-			flag = true;
-			logger.info("validationSuccessful");
-		}
-		logger.info("validateUsername() has executed");
-		return flag;
-    }
+//	public static boolean validateUsername(String cusName) throws CustomResponseException{  		
+//		logger.info("validateUsername() is initiated");
+//		boolean flag = false;
+//		if(cusName.isEmpty()) {
+//			logger.error("User Name cannot be empty");
+//			throw new CustomResponseException("User Name cannot be empty");
+//			}
+//		else if(!cusName.matches("^[a-zA-Z]+$")) {
+//			logger.error("use proper name format");
+//			throw new CustomResponseException(usernameformat);
+//			}
+//		else if(cusName.length()<3 || cusName.length()>30) {
+//			logger.error("User Name length must be in range 3 to 30");
+//			throw new CustomResponseException("User Name length must be in range 3 to 30");
+//		}
+//		else {
+//			flag = true;
+//			logger.info("validationSuccessful");
+//		}
+//		logger.info("validateUsername() has executed");
+//		return flag;
+//    }
 	
 
 	/*************************************************************************************
@@ -277,20 +277,20 @@ public class CustomerService implements ICustomerService{
 		 *@throws CustomResponseException -  It will raise if address is empty.                          	 
 	 *************************************************************************************/
 	
-	public static boolean validateAddress(String address) throws CustomResponseException{  		
-		logger.info("validateAddress() is initiated");
-		boolean flag = false;
-		if(address.isEmpty()) {
-			logger.error("Address cannot be empty");
-			throw new CustomResponseException("Address cannot be empty");
-			}
-		else {
-			flag = true;
-			logger.info("validationSuccessful");
-		}
-		logger.info("validateAddress() has executed");
-		return flag;
-    }
+//	public static boolean validateAddress(String address) throws CustomResponseException{  		
+//		logger.info("validateAddress() is initiated");
+//		boolean flag = false;
+//		if(address.isEmpty()) {
+//			logger.error("Address cannot be empty");
+//			throw new CustomResponseException("Address cannot be empty");
+//			}
+//		else {
+//			flag = true;
+//			logger.info("validationSuccessful");
+//		}
+//		logger.info("validateAddress() has executed");
+//		return flag;
+//    }
 	
 	/*************************************************************************************
 	 * Method:                          	validateEmail
@@ -300,24 +300,24 @@ public class CustomerService implements ICustomerService{
 		 *@throws CustomResponseException -  It will raise if email format mismatch.                          	 
 	 *************************************************************************************/
 	
-	public static boolean validateEmail(String email) throws CustomResponseException{  		
-		logger.info("validateEmail() is initiated");
-		boolean flag = false;
-		if(email.isEmpty()) {
-			logger.error("email cannot be empty");
-			throw new CustomResponseException("email cannot be empty");
-			}
-		else if(!email.matches("[a-z0-9]+@[a-z]+\\.[a-z]{2,3}")) {
-			logger.error("use proper email format");
-			throw new CustomResponseException("use proper email format");
-			}
-		else {
-			flag = true;
-			logger.info("validationSuccessful");
-		}
-		logger.info("validateEmail() has executed");
-		return flag;
-    }
+//	public static boolean validateEmail(String email) throws CustomResponseException{  		
+//		logger.info("validateEmail() is initiated");
+//		boolean flag = false;
+//		if(email.isEmpty()) {
+//			logger.error("email cannot be empty");
+//			throw new CustomResponseException("email cannot be empty");
+//			}
+//		else if(!email.matches("[a-z0-9]+@[a-z]+\\.[a-z]{2,3}")) {
+//			logger.error("use proper email format");
+//			throw new CustomResponseException("use proper email format");
+//			}
+//		else {
+//			flag = true;
+//			logger.info("validationSuccessful");
+//		}
+//		logger.info("validateEmail() has executed");
+//		return flag;
+//    }
 	
 	/*************************************************************************************
 	 * Method:                          	validatePassword
@@ -363,25 +363,25 @@ public class CustomerService implements ICustomerService{
 		918880344456	 
 	 *************************************************************************************/
 	
-	public static boolean validateContacNo(String number) throws CustomResponseException
-    {  
-		logger.info("validateContacNo() is initiated");
-		boolean flag = false;
-		if(number.isEmpty()) {
-			logger.error("Contact Number cannot be empty");
-			throw new CustomResponseException("Contact Number cannot be empty");
-		}
-		else if(!number.matches("^(\\+91[\\-\\s]?)?[0]?(91)?[789]\\d{9}$")){
-			logger.error("enter correct  mobile number");
-			throw new CustomResponseException("enter correct  mobile number");
-		}
-		else {
-			flag = true;
-			logger.info("validationSuccessful");
-		}
-		logger.info("validateContacNo() has executed");
-		return flag;
-    }
+//	public static boolean validateContacNo(String number) throws CustomResponseException
+//    {  
+//		logger.info("validateContacNo() is initiated");
+//		boolean flag = false;
+//		if(number.isEmpty()) {
+//			logger.error("Contact Number cannot be empty");
+//			throw new CustomResponseException("Contact Number cannot be empty");
+//		}
+//		else if(!number.matches("^(\\+91[\\-\\s]?)?[0]?(91)?[789]\\d{9}$")){
+//			logger.error("enter correct  mobile number");
+//			throw new CustomResponseException("enter correct  mobile number");
+//		}
+//		else {
+//			flag = true;
+//			logger.info("validationSuccessful");
+//		}
+//		logger.info("validateContacNo() has executed");
+//		return flag;
+//    }
 	
 	static String usernameformat ="Format For UserName is Wrong\r\n "
 			+ "\r\n "

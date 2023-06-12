@@ -10,23 +10,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.cg.app.entity.Book;
-import com.project.cg.app.entity.IssuedBook;
+import com.project.cg.app.entity.IssuedBookList;
 import com.project.cg.app.exception.BookCannotBeIssueException;
 import com.project.cg.app.exception.BookNotFoundException;
 import com.project.cg.app.exception.CustomResponseException;
 import com.project.cg.app.exception.UserNotFoundException;
 import com.project.cg.app.repository.BookRepository;
 import com.project.cg.app.repository.CustomerRepository;
-import com.project.cg.app.repository.IssuedBookRepository;
-import com.project.cg.app.service.IIssuedBookService;
+import com.project.cg.app.repository.IssuedBookListRepository;
+import com.project.cg.app.service.IIssuedBookListService;
 
 
 
 @Service
-public class IssuedBookService implements IIssuedBookService {
-	final static Logger logger=LogManager.getLogger(IssuedBookService.class);
+public class IssuedBookListService implements IIssuedBookListService {
+	final static Logger logger=LogManager.getLogger(IssuedBookListService.class);
 	@Autowired
-	private IssuedBookRepository repo;
+	private IssuedBookListRepository repo;
 	@Autowired
 	private BookRepository bookRepository;
 	@Autowired
@@ -41,20 +41,20 @@ public class IssuedBookService implements IIssuedBookService {
 	 */
 	
 	@Override
-	public IssuedBook addIssuedBook(IssuedBook book) {
+	public IssuedBookList addIssuedBook(IssuedBookList book) {
 		logger.info("Business method addIssuedBook initiated");
+		validateIssueDate(book);
+		validateDueDate(book);
 		if (book.getBook().getBookId()==0 && book.getUser().getCusId()==0) {
 			logger.error("Booking details cannot be blank");
-			throw new BookNotFoundException("Booking details cannot be blank");
+			throw new CustomResponseException("Booking details cannot be blank");
 		}
 		int id=book.getBook().getBookId();
 		int cusid=book.getUser().getCusId();
 		int count=0;
 		Book value=bookRepository.findById(id).orElseThrow((()-> new BookNotFoundException("Please enter correct bookId")));
 		customerRepository.findById(cusid).orElseThrow(()->new UserNotFoundException("Please enter correct cusId"));
-		validateIssueDate(book);
-		validateDueDate(book);
-		List<IssuedBook> books=repo.findAll();
+		List<IssuedBookList> books=repo.findAll();
 		if(value.getIssuedBook()<value.getQuantity()) {
 		value.setIssuedBook((value.getIssuedBook())+1);
 		}
@@ -93,9 +93,9 @@ public class IssuedBookService implements IIssuedBookService {
 	 */
 	
 	@Override
-	public IssuedBook updateIssuedBook(IssuedBook book, int issuedBookId)throws CustomResponseException {
+	public IssuedBookList updateIssuedBook(IssuedBookList book, int issuedBookId)throws CustomResponseException {
 		logger.info("Business method updateIssuedBook initiated");
-		IssuedBook value=repo.findById(issuedBookId).orElseThrow(()-> new CustomResponseException("this issuedBookId not found in database"));
+		IssuedBookList value=repo.findById(issuedBookId).orElseThrow(()-> new CustomResponseException("this issuedBookId not found in database"));
 		value.setBook(book.getBook());
 		value.setUser(book.getUser());
 		value.setIssueDate(book.getIssueDate());
@@ -115,7 +115,7 @@ public class IssuedBookService implements IIssuedBookService {
 	@Override
 	public void deleteIssuedBook(int issuedBookId) {
 		logger.info("Business method deleteIssuedBook initiated");
-		IssuedBook val=repo.findById(issuedBookId).orElseThrow(()->new BookNotFoundException("book details not found with id:"+issuedBookId ));
+		IssuedBookList val=repo.findById(issuedBookId).orElseThrow(()->new BookNotFoundException("book details not found with id:"+issuedBookId ));
 		Book value=bookRepository.findById(val.getBook().getBookId()).orElseThrow();
 		if(value.getIssuedBook()>0) {
 		value.setIssuedBook((value.getIssuedBook())-1);
@@ -134,7 +134,7 @@ public class IssuedBookService implements IIssuedBookService {
 	 */
 
 	@Override
-	public IssuedBook viewIssuedBook(int issuedBookId) {
+	public IssuedBookList viewIssuedBook(int issuedBookId) {
 		logger.info("Business method viewIssuedBook initiated");
 		return repo.findById(issuedBookId).orElseThrow(()->new BookNotFoundException("book details not found with id:"+issuedBookId ));
 	}
@@ -147,9 +147,9 @@ public class IssuedBookService implements IIssuedBookService {
 	 */
 	
 	@Override
-	public List<IssuedBook> viewAllIssuedBook() {
+	public List<IssuedBookList> viewAllIssuedBook() {
 		logger.info("Business method viewAllIssuedBook initiated");
-		List<IssuedBook> books=repo.findAll();
+		List<IssuedBookList> books=repo.findAll();
 		logger.info("Business method viewAllIssuedBook executed");
 		return books;
 	}
@@ -162,7 +162,7 @@ public class IssuedBookService implements IIssuedBookService {
 		 *@throws CustomResponseException -  It will raise in case of mismatch of date.                          	 
 	 *************************************************************************************/
 
-	public static boolean validateIssueDate(IssuedBook issuedBook) throws CustomResponseException {
+	public static boolean validateIssueDate(IssuedBookList issuedBook) throws CustomResponseException {
 		logger.info("validateIssueDate() is initiated");
 		LocalDate date=LocalDate.now(); 
 		boolean flag = false;
@@ -188,7 +188,7 @@ public class IssuedBookService implements IIssuedBookService {
 		 *@throws CustomResponseException -  It will raise in case of mismatch of date.                          	 
 	 *************************************************************************************/
 
-	public static boolean validateDueDate(IssuedBook issuedBook) throws CustomResponseException {
+	public static boolean validateDueDate(IssuedBookList issuedBook) throws CustomResponseException {
 		logger.info("validateDueDate() is initiated");
 		boolean flag = false;
 		if (issuedBook.getDueDate() == null) {
